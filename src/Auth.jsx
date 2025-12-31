@@ -32,15 +32,15 @@ const Auth = () => {
       : "http://localhost:5000/api/auth/signup";
 
     try {
-      const response = await fetch(url, {
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...formData, role }),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok) {
+      if (!res.ok) {
         alert(data.message || "Something went wrong");
       } else {
         localStorage.setItem(
@@ -73,7 +73,7 @@ const Auth = () => {
     }
   };
 
-  /* ================= GOOGLE LOGIN ================= */
+  /* ================= GOOGLE AUTH ================= */
   const handleGoogleLogin = async (credential) => {
     try {
       const res = await fetch("http://localhost:5000/api/auth/google", {
@@ -85,7 +85,7 @@ const Auth = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Google login failed");
+        alert(data.message || "Google authentication failed");
         return;
       }
 
@@ -114,7 +114,7 @@ const Auth = () => {
         <div className="auth-container">
           <h2>{isLogin ? "Login" : "Signup"} - Library Management</h2>
 
-          {/* Role Switch */}
+          {/* ROLE SWITCH */}
           <div className="role-switch">
             <button
               type="button"
@@ -132,7 +132,7 @@ const Auth = () => {
             </button>
           </div>
 
-          {/* Form */}
+          {/* FORM */}
           <form onSubmit={handleSubmit}>
             {!isLogin && (
               <input
@@ -140,8 +140,8 @@ const Auth = () => {
                 name="name"
                 placeholder="Full Name"
                 value={formData.name}
-                required
                 onChange={handleChange}
+                required
               />
             )}
 
@@ -150,8 +150,8 @@ const Auth = () => {
               name="email"
               placeholder="Email"
               value={formData.email}
-              required
               onChange={handleChange}
+              required
             />
 
             <div className="password-box">
@@ -160,8 +160,8 @@ const Auth = () => {
                 name="password"
                 placeholder="Password"
                 value={formData.password}
-                required
                 onChange={handleChange}
+                required
               />
               <span
                 className="toggle-password"
@@ -177,8 +177,8 @@ const Auth = () => {
                 name="enrollment"
                 placeholder="Enrollment Number"
                 value={formData.enrollment}
-                required
                 onChange={handleChange}
+                required
               />
             )}
 
@@ -188,8 +188,8 @@ const Auth = () => {
                 name="adminCode"
                 placeholder="Admin Secret Code"
                 value={formData.adminCode}
-                required
                 onChange={handleChange}
+                required
               />
             )}
 
@@ -198,17 +198,17 @@ const Auth = () => {
             </button>
           </form>
 
-          {/* GOOGLE LOGIN (ONLY FOR LOGIN MODE) */}
-          {isLogin && (
-            <div style={{ marginTop: "15px", textAlign: "center" }}>
-              <p>or</p>
-              <GoogleLogin
-                onSuccess={(res) => handleGoogleLogin(res.credential)}
-                onError={() => alert("Google Login Failed")}
-              />
-            </div>
-          )}
+          {/* GOOGLE AUTH (LOGIN + SIGNUP) */}
+          <div className="google-box">
+            <p>or</p>
+            <GoogleLogin
+              onSuccess={(res) => handleGoogleLogin(res.credential)}
+              onError={() => alert("Google Authentication Failed")}
+            />
+            
+          </div>
 
+          {/* TOGGLE */}
           <p className="toggle-text">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
             <span onClick={() => setIsLogin(!isLogin)}>
@@ -218,113 +218,160 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* CSS (UNCHANGED) */}
+      {/* CSS */}
       <style>{`
-        * {
-          box-sizing: border-box;
-          font-family: Arial, sans-serif;
-        }
+  * {
+    box-sizing: border-box;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  }
 
-        .auth-wrapper {
-          min-height: 100vh;
-          width: 100vw;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background: #f4f6f8;
-        }
+  body {
+    margin: 0;
+  }
 
-        .auth-container {
-          max-width: 420px;
-          width: 100%;
-          background: #fff;
-          padding: 25px;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+  /* Page background */
+  .auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(
+      135deg,
+      #1e1f29,
+      #2b2d42
+    );
+  }
 
-        h2 {
-          text-align: center;
-          margin-bottom: 20px;
-          color: #333;
-        }
+  /* Auth card */
+  .auth-container {
+    width: 420px;
+    background: #2f3136; /* Discord dark */
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    color: #ffffff;
+  }
 
-        .role-switch {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 20px;
-        }
+  /* Heading */
+  h2 {
+    text-align: center;
+    margin-bottom: 22px;
+    font-size: 22px;
+    font-weight: 600;
+  }
 
-        .role-switch button {
-          width: 48%;
-          padding: 10px;
-          border: none;
-          cursor: pointer;
-          background: #ddd;
-          border-radius: 5px;
-          font-weight: bold;
-        }
+  /* Role switch */
+  .role-switch {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
 
-        .role-switch .active {
-          background: #008080;
-          color: #fff;
-        }
+  .role-switch button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background: #202225;
+    color: #b9bbbe;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
 
-        form input {
-          width: 100%;
-          padding: 10px;
-          margin-bottom: 15px;
-          border-radius: 5px;
-          border: 1px solid #ccc;
-        }
+  .role-switch .active {
+    background: #5865F2; /* Discord blue */
+    color: #ffffff;
+  }
 
-        .password-box {
-          position: relative;
-        }
+  /* Inputs */
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    border: none;
+    background: #202225;
+    color: #ffffff;
+    font-size: 14px;
+  }
 
-        .toggle-password {
-          position: absolute;
-          right: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          cursor: pointer;
-          color: #008080;
-          font-size: 14px;
-          font-weight: bold;
-        }
+  input::placeholder {
+    color: #8e9297;
+  }
 
-        .auth-btn {
-          width: 100%;
-          padding: 12px;
-          border: none;
-          background: #ff3700;
-          color: white;
-          font-size: 16px;
-          border-radius: 5px;
-          cursor: pointer;
-        }
+  input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(88,101,242,0.6);
+  }
 
-        .auth-btn:hover:not(:disabled) {
-          background: #e03100;
-        }
+  /* Password field */
+  .password-box {
+    position: relative;
+  }
 
-        .auth-btn:disabled {
-          background: #ccc;
-          cursor: not-allowed;
-        }
+  .toggle-password {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #5865F2;
+    font-weight: 600;
+    font-size: 13px;
+  }
 
-        .toggle-text {
-          text-align: center;
-          margin-top: 15px;
-          color: #555;
-        }
+  /* Main button */
+  .auth-btn {
+    width: 100%;
+    padding: 13px;
+    background: #5865F2;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.2s ease;
+  }
 
-        .toggle-text span {
-          color: #008080;
-          cursor: pointer;
-          font-weight: bold;
-        }
-      `}</style>
+  .auth-btn:hover {
+    background: #6d79f6;
+  }
+
+  .auth-btn:disabled {
+    background: #4f545c;
+    cursor: not-allowed;
+  }
+
+  /* Google login */
+  .google-box {
+    margin-top: 18px;
+    text-align: center;
+  }
+
+  .google-text {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #b9bbbe;
+  }
+
+  /* Toggle login/signup */
+  .toggle-text {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 14px;
+    color: #b9bbbe;
+  }
+
+  .toggle-text span {
+    color: #5865F2;
+    cursor: pointer;
+    font-weight: 600;
+  }
+`}</style>
+
     </>
   );
 };

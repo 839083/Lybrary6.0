@@ -72,171 +72,294 @@ const AdminDashboard = () => {
   return (
     <div className="admin-wrapper">
       <div className="admin-dashboard">
-        <h1>Admin Dashboard</h1>
 
-        {/* ===== ADD BOOK ===== */}
-        <h3>Add Book</h3>
-        <input
-          placeholder="Book Name"
-          value={bookData.name}
-          onChange={(e) => setBookData({ ...bookData, name: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={bookData.price}
-          onChange={(e) => setBookData({ ...bookData, price: e.target.value })}
-        />
-        <button onClick={addBook}>Add Book</button>
-
-        {/* ===== ASSIGN BOOK ===== */}
-        <h3>Assign Book to Student</h3>
-
-        <select
-          onChange={(e) =>
-            setAssignData({ ...assignData, bookId: e.target.value })
-          }
-        >
-          <option value="">Select Book</option>
-          {books.map((b) => (
-            <option key={b._id} value={b._id}>
-              {b.name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          onChange={(e) =>
-            setAssignData({ ...assignData, studentEmail: e.target.value })
-          }
-        >
-          <option value="">Select Student</option>
-          {students.map((s) => (
-            <option key={s._id} value={s.email}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="date"
-          onChange={(e) =>
-            setAssignData({ ...assignData, startDate: e.target.value })
-          }
-        />
-        <input
-          type="date"
-          onChange={(e) =>
-            setAssignData({ ...assignData, endDate: e.target.value })
-          }
-        />
-
-        <button onClick={assignBook}>Assign</button>
-
-        {/* ===== ASSIGNMENTS ===== */}
-        <h3>Assigned Books</h3>
-        <div className="assignment-list">
-          {assignments.map((a) => (
-            <div className="assignment-card" key={a._id}>
-              <strong>{a.bookId?.name}</strong>
-              <span>{a.studentEmail}</span>
+        {/* PROFILE HEADER */}
+        <div className="profile-header">
+          <div className="profile-left">
+            <div className="avatar">🛡️</div>
+            <div>
+              <h1>{user?.name}</h1>
+              <p className="role">Administrator</p>
+              <p className="email">{user?.email}</p>
             </div>
-          ))}
+          </div>
+
+          <button
+            className="logout-btn"
+            onClick={() => {
+              localStorage.clear();
+              navigate("/");
+            }}
+          >
+            Logout
+          </button>
         </div>
 
-        <button
-          className="logout-btn"
-          onClick={() => {
-            localStorage.clear();
-            navigate("/");
-          }}
-        >
-          Logout
-        </button>
+        {/* ADD BOOK */}
+        <div className="section">
+          <h2>Add New Book</h2>
+          <div className="form-grid">
+            <input
+              placeholder="Book Name"
+              value={bookData.name}
+              onChange={(e) =>
+                setBookData({ ...bookData, name: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              value={bookData.price}
+              onChange={(e) =>
+                setBookData({ ...bookData, price: e.target.value })
+              }
+            />
+          </div>
+          <button className="primary-btn" onClick={addBook}>
+            Add Book
+          </button>
+        </div>
+
+        {/* ASSIGN BOOK */}
+        <div className="section">
+          <h2>Assign Book to Student</h2>
+
+          <div className="form-grid">
+            <select
+              onChange={(e) =>
+                setAssignData({ ...assignData, bookId: e.target.value })
+              }
+            >
+              <option value="">Select Book</option>
+              {books.map((b) => (
+                <option key={b._id} value={b._id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              onChange={(e) =>
+                setAssignData({
+                  ...assignData,
+                  studentEmail: e.target.value,
+                })
+              }
+            >
+              <option value="">Select Student</option>
+              {students.map((s) => (
+                <option key={s._id} value={s.email}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="date"
+              onChange={(e) =>
+                setAssignData({ ...assignData, startDate: e.target.value })
+              }
+            />
+            <input
+              type="date"
+              onChange={(e) =>
+                setAssignData({ ...assignData, endDate: e.target.value })
+              }
+            />
+          </div>
+
+          <button className="primary-btn" onClick={assignBook}>
+            Assign Book
+          </button>
+        </div>
+
+        {/* ASSIGNMENTS */}
+        <div className="section">
+          <h2>Current Assignments</h2>
+
+          <div className="assignment-grid">
+            {assignments.map((a) => (
+              <div className="assignment-card" key={a._id}>
+                <div className="assignment-book">
+                  📘 {a.bookId?.name}
+                </div>
+                <div className="assignment-student">
+                  {a.studentEmail}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* ===== CSS ===== */}
+      {/* ===================== CSS ===================== */}
       <style>{`
         * {
           box-sizing: border-box;
-          font-family: Arial, sans-serif;
+          font-family: "Inter", "Segoe UI", Arial, sans-serif;
         }
 
         .admin-wrapper {
           min-height: 100vh;
           width: 100vw;
-          background: #f4f6f8;
           display: flex;
           justify-content: center;
           align-items: center;
+          background: linear-gradient(135deg, #1e1f29, #2b2d42);
+          padding: 32px;
         }
 
         .admin-dashboard {
-          background: #fff;
           width: 100%;
-          max-width: 900px;
-          padding: 30px;
-          border-radius: 12px;
-          box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+          max-width: 1200px;
+          background: #2f3136;
+          padding: 40px;
+          border-radius: 20px;
+          box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+          color: #ffffff;
         }
 
-        h1 {
-          text-align: center;
-          color: #008080;
-          margin-bottom: 20px;
-        }
-
-        h3 {
-          margin-top: 25px;
-          margin-bottom: 10px;
-          color: #333;
-        }
-
-        input, select {
-          width: 100%;
-          padding: 10px;
-          margin-bottom: 12px;
-          border-radius: 6px;
-          border: 1px solid #ccc;
-        }
-
-        button {
-          padding: 10px 16px;
-          background: #ff3700;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-          margin-top: 5px;
-        }
-
-        button:hover {
-          background: #e03100;
-        }
-
-        .assignment-list {
-          margin-top: 15px;
-          display: grid;
-          gap: 10px;
-        }
-
-        .assignment-card {
-          padding: 10px;
-          background: #f0f9f9;
-          border-left: 5px solid #008080;
+        /* PROFILE */
+        .profile-header {
           display: flex;
           justify-content: space-between;
-          border-radius: 6px;
+          align-items: center;
+          padding-bottom: 28px;
+          border-bottom: 1px solid #3a3d42;
+          margin-bottom: 36px;
+        }
+
+        .profile-left {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .avatar {
+          width: 72px;
+          height: 72px;
+          border-radius: 18px;
+          background: #5865f2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 34px;
+        }
+
+        .profile-header h1 {
+          margin: 0;
+          font-size: 28px;
+          font-weight: 600;
+        }
+
+        .role {
+          font-size: 16px;
+          color: #b9bbbe;
+        }
+
+        .email {
+          font-size: 14px;
+          color: #8e9297;
         }
 
         .logout-btn {
-          width: 100%;
-          margin-top: 30px;
-          background: #333;
+          background: #ed4245;
+          border: none;
+          color: white;
+          padding: 12px 22px;
+          border-radius: 12px;
+          cursor: pointer;
+          font-size: 15px;
+          font-weight: 600;
         }
 
         .logout-btn:hover {
-          background: #111;
+          background: #f04747;
+        }
+
+        /* SECTIONS */
+        .section {
+          margin-top: 36px;
+        }
+
+        .section h2 {
+          font-size: 22px;
+          margin-bottom: 18px;
+          font-weight: 600;
+        }
+
+        /* FORMS */
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          gap: 16px;
+          margin-bottom: 16px;
+        }
+
+        input, select {
+          padding: 14px;
+          border-radius: 12px;
+          border: none;
+          font-size: 15px;
+          background: #202225;
+          color: #ffffff;
+        }
+
+        input::placeholder {
+          color: #8e9297;
+        }
+
+        .primary-btn {
+          background: #5865f2;
+          border: none;
+          color: white;
+          padding: 14px 26px;
+          border-radius: 14px;
+          cursor: pointer;
+          font-size: 15px;
+          font-weight: 600;
+        }
+
+        .primary-btn:hover {
+          background: #6d79f6;
+        }
+
+        /* ASSIGNMENTS */
+        .assignment-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 18px;
+        }
+
+        .assignment-card {
+          background: #202225;
+          padding: 18px;
+          border-radius: 14px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 15px;
+        }
+
+        .assignment-book {
+          font-weight: 600;
+        }
+
+        .assignment-student {
+          color: #b9bbbe;
+          font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+          .profile-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
+          }
+
+          .logout-btn {
+            align-self: flex-end;
+          }
         }
       `}</style>
     </div>

@@ -1,47 +1,26 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./App.css";
 
+import Landing from "./Landing";
 import Auth from "./Auth";
 import AdminDashboard from "./AdminDashboard";
 import StudentDashboard from "./StudentDashboard";
 
-const App = () => {
+function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Auth Page */}
-        <Route
-          path="/"
-          element={
-            <div className="app">
-              <Auth />
-            </div>
-          }
-        />
+        {/* Landing Page */}
+        <Route path="/" element={<Landing />} />
 
-        {/* Admin Dashboard */}
-        <Route
-          path="/admin-dashboard"
-          element={
-            <div className="app">
-              <AdminDashboard />
-            </div>
-          }
-        />
+        {/* Authentication */}
+        <Route path="/auth" element={<Auth />} />
 
-        {/* Student Dashboard */}
-        <Route
-          path="/student-dashboard"
-          element={
-            <div className="app">
-              <StudentDashboard />
-            </div>
-          }
-        />
+        {/* Dashboards */}
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
       </Routes>
     </BrowserRouter>
   );
-};
+}
 
 export default App;
